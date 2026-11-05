@@ -1,16 +1,16 @@
 export type Trip = {
-    id: number;
+    id: string;
     title: string;
     destination: string;
-    startDate: number;
-    endDate: number;
+    startDate: string;
+    endDate: string;
     memo: string;
 };
 
 export type TripMember = {
-    tripId: number;
-    userId: number;
-    role: string;
+    tripId: string;
+    userId: string;
+    role: 'OWNER' | 'MEMBER';
 };
 
 export type CreateTripInput = Omit<Trip, 'id'>;
