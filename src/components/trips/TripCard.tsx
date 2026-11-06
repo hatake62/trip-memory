@@ -1,3 +1,4 @@
+import { getTripStatus } from "@/lib/trip-utils";
 import type { Trip } from "@/lib/types";
 
 type TripCardProps = {
@@ -10,6 +11,7 @@ export default function TripCard({trip}: TripCardProps) {
             <h3 className="font-bold">{trip.title}</h3>
             <p>場所: {trip.destination}</p>
             <p>{trip.startDate} ~ {trip.endDate}</p>
+            <p>{getTripStatus(trip)}</p>
         </div>
     )
 }

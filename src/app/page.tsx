@@ -1,14 +1,13 @@
-import TripCard from "@/components/trips/TripCard";
-import { mockData } from "@/lib/mock-data";
+import TripList from "@/components/trips/TripList";
+import { Suspense } from "react";
 
-const trips = mockData;
 export default function Home() {
   return (
     <div>
       <main>
-        {trips.map(trip => (
-            <TripCard trip={trip} key={trip.id}/>
-        ))}
+        <Suspense fallback={<p>旅行を読み込み中...</p>}>
+            <TripList />
+        </Suspense>
       </main>
     </div>
   );

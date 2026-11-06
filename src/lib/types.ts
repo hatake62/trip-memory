@@ -14,3 +14,12 @@ export type TripMember = {
 };
 
 export type CreateTripInput = Omit<Trip, 'id'>;
+
+export type TripStatus = "upcoming" | "ongoing" | "past";
+
+export type FilterStatus = TripStatus | "all";
+
+export type TripFilterProps = {
+    status: FilterStatus, 
+    setStatus: (status: FilterStatus) => void
+};
