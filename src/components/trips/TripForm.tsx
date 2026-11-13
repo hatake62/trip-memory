@@ -6,10 +6,11 @@ import Icon from "@/components/ui/Icon";
 import type { CreateTripInput } from "@/lib/types";
 import { useState } from "react";
 import type { FormEvent } from "react";
+import { addSavedTrip } from "@/lib/trip-storage";
+import { useRouter } from "next/navigation";
 
 export function TripForm() {
     const [ error, setError ] = useState("");
-    const [isValidated, setIsValidated] = useState(false);
     const [ formData, setFormData ] = useState<CreateTripInput>({
         title: "",
         destination: "",
@@ -17,10 +18,10 @@ export function TripForm() {
         endDate: "",
         memo: ""
     });
+    const router = useRouter();
 
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        setIsValidated(false);
         if(formData.title.trim() === ""){
             setError("旅行名を入力してください");
             return;
@@ -52,14 +53,19 @@ export function TripForm() {
             destination: formData.destination.trim(),
         };
 
-        setError("");
-        console.log(validatedData);
-        setIsValidated(true);
+
+        try {
+            addSavedTrip(validatedData);
+            router.push("/");
+        } catch(err) {
+            console.error(err);
+            setError("旅行の保存に失敗しました。もう一度お試しください");
+        }
     }
 
 
     return (
-        <form onSubmit={handleSubmit} onChange={() => setIsValidated(false)} className="rounded-2xl border border-line bg-white p-5 sm:p-8">
+        <form onSubmit={handleSubmit} className="rounded-2xl border border-line bg-white p-5 sm:p-8">
             <div className="mb-8 border-b border-line pb-6">
                 <h2 className="text-lg font-semibold">旅の基本情報</h2>
                 <p className="mt-2 text-sm leading-6 text-muted">必須の項目を入力してください。メモは後から考えても大丈夫です。</p>
@@ -149,21 +155,15 @@ export function TripForm() {
                 </div>
             </div>
             <div className="mt-8 border-t border-line pt-6">
-                <p className="mb-5 rounded-xl bg-sage px-4 py-3 text-xs leading-6 text-muted">現在は入力内容の確認まで利用できます。旅行の保存機能は準備中のため、入力内容は保存されません。</p>
                 {error && (
                     <p id="trip-form-error" role="alert" className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-6 text-red-800">
                         {error}
                     </p>
                 )}
-                {isValidated && (
-                    <p role="status" className="mb-5 flex items-start gap-2 rounded-xl border border-line bg-sage px-4 py-3 text-sm leading-6 text-forest">
-                        <Icon name="check" className="mt-0.5 shrink-0" />
-                        入力内容を確認しました。旅行はまだ保存されていません。
-                    </p>
-                )}
+                
                 <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
                     <Link href="/" className="button-secondary">旅行一覧に戻る</Link>
-                    <button type="submit" className="button-primary"><Icon name="check" />入力内容を確認する</button>
+                    <button type="submit" className="button-primary"><Icon name="check" />旅行を作成する</button>
                 </div>
             </div>
         </form>
