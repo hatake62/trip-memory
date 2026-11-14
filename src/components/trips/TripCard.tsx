@@ -2,6 +2,7 @@ import { getTripStatus } from "@/lib/trip-utils";
 import { statusLabels, statusStyles } from "@/lib/trip-presentation";
 import type { Trip } from "@/lib/types";
 import Icon from "@/components/ui/Icon";
+import Link from "next/link";
 
 type TripCardProps = { trip: Trip };
 
@@ -9,6 +10,7 @@ export default function TripCard({ trip }: TripCardProps) {
   const status = getTripStatus(trip);
 
   return (
+    <Link href={`/trips/${trip.id}`}>
     <article className="flex h-full min-w-0 flex-col rounded-2xl border border-line bg-white p-6 sm:p-7">
       <div className="mb-7 flex items-center justify-between gap-3">
         <span className="flex size-11 items-center justify-center rounded-xl bg-sage text-forest"><Icon name="book" /></span>
@@ -26,5 +28,6 @@ export default function TripCard({ trip }: TripCardProps) {
         </p>
       </div>
     </article>
+    </Link>
   );
 }

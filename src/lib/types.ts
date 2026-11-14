@@ -23,3 +23,7 @@ export type TripFilterProps = {
     status: FilterStatus, 
     setStatus: (status: FilterStatus) => void
 };
+
+export type Prop = {
+    params: Promise<{id: string}>;
+};

@@ -1,3 +1,4 @@
+import { mockData } from "./mock-data";
 import type { CreateTripInput, Trip } from "./types";
 
 const STORAGE_KEY = "tabilog:trips:v1";
@@ -31,4 +32,11 @@ export function addSavedTrip(input: CreateTripInput): Trip {
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify([...nowTrip, newTrip]));
     return newTrip;
+}
+
+export function getTripById(id: string): Trip | undefined {
+  const savedData = getSavedTrips();
+  const data = [...savedData, ...mockData];
+
+  return data.find(trip => trip.id === id);
 }
