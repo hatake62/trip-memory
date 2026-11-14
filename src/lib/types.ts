@@ -31,3 +31,23 @@ export type Prop = {
 export type TripFormProps = 
     | { mode: "create"}
     | { mode: "edit"; trip: Trip};
+
+export type ItineraryItem = {
+    id: string;
+    tripId: string;
+    date: string;
+    time: string | null;
+    title: string;
+    category: ItineraryCategory;
+    memo: string;
+};
+
+export type ItineraryCategory = 
+    | "sightseeing"
+    | "food"
+    | "transport"
+    | "hotel"
+    | "other";
+
+export type CreateItineraryInput = Omit<ItineraryItem, "id">;
+
