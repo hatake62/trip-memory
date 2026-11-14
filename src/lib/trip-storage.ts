@@ -64,3 +64,17 @@ export function updateSavedTrip(
 
     return updatedTrip.find(trip => trip.id === id);
 }
+
+export function deleteSavedTrip(id: string): boolean {
+    const savedTrip = getSavedTrips();
+    const deletedTrip = savedTrip.filter(trip => trip.id !== id);
+    if(deletedTrip.length === savedTrip.length){
+        return false;
+    }
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(deletedTrip)
+    );
+    return true;
+}
