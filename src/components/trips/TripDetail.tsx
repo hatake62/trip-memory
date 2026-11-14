@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { Trip } from "@/lib/types";
 import { getTripById } from "@/lib/trip-storage";
+import Link from "next/link";
 
 export function TripDetail({ id }: { id: string }) {
     const [tripData, setTripData] = useState<Trip | undefined>();
@@ -10,14 +11,13 @@ export function TripDetail({ id }: { id: string }) {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        setIsLoading(true);
         const timerId = setTimeout(() => {
             try {
                 const loadeddata = getTripById(id);
-                setTripData(loadeddata); 
+                setTripData(loadeddata);
             } catch(err) {
                 console.error(err);
-                setError("ホテルデータを読み込めませんでした");
+                setError("旅行データを読み込めませんでした");
             } finally {
                 setIsLoading(false);
             }
@@ -49,6 +49,9 @@ export function TripDetail({ id }: { id: string }) {
                 <p>{tripData.destination}</p>
                 <p>{tripData.startDate} ~ {tripData.endDate}</p>
                 <p>{tripData.memo}</p>
+                <Link href={`/trips/${id}/edit`}>
+                    編集
+                </Link>
             </>
             }
         </div>

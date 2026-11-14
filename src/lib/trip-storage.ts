@@ -40,3 +40,27 @@ export function getTripById(id: string): Trip | undefined {
 
   return data.find(trip => trip.id === id);
 }
+
+export function updateSavedTrip(
+    id: string,
+    input: CreateTripInput
+): Trip | undefined {
+    const savedTrip = getSavedTrips();
+
+    if(!savedTrip.some(trip => trip.id === id)){
+        return undefined;
+    }
+
+    const updatedTrip = savedTrip.map(trip => 
+        trip.id === id 
+            ? {...trip, ...input} 
+            : trip
+    );
+
+    localStorage.setItem(
+        STORAGE_KEY, 
+        JSON.stringify(updatedTrip)
+    );
+
+    return updatedTrip.find(trip => trip.id === id);
+}

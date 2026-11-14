@@ -3,21 +3,24 @@
 import Link from "next/link";
 import Icon from "@/components/ui/Icon";
 
-import type { CreateTripInput } from "@/lib/types";
+import type { CreateTripInput, TripFormProps } from "@/lib/types";
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { addSavedTrip } from "@/lib/trip-storage";
+import { addSavedTrip, updateSavedTrip } from "@/lib/trip-storage";
 import { useRouter } from "next/navigation";
 
-export function TripForm() {
+export function TripForm(props : TripFormProps) {
     const [ error, setError ] = useState("");
-    const [ formData, setFormData ] = useState<CreateTripInput>({
-        title: "",
-        destination: "",
-        startDate: "",
-        endDate: "",
-        memo: ""
-    });
+    const [ formData, setFormData ] = useState<CreateTripInput>(
+        props.mode === "create" 
+            ? {
+                title: "",
+                destination: "",
+                startDate: "",
+                endDate: "",
+                memo: ""    
+            } : props.trip
+    );
     const router = useRouter();
 
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -55,8 +58,19 @@ export function TripForm() {
 
 
         try {
-            addSavedTrip(validatedData);
-            router.push("/");
+            if(props.mode === "create"){
+                addSavedTrip(validatedData);
+                router.push("/");
+            }
+            else {
+                const updatedtrip = updateSavedTrip(props.trip.id, validatedData);
+                if(!updatedtrip) {
+                    setError("編集対象の旅行が見つかりません");
+                    return;
+                }
+
+                router.push(`/trips/${props.trip.id}`);
+            }
         } catch(err) {
             console.error(err);
             setError("旅行の保存に失敗しました。もう一度お試しください");
@@ -163,7 +177,12 @@ export function TripForm() {
                 
                 <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
                     <Link href="/" className="button-secondary">旅行一覧に戻る</Link>
-                    <button type="submit" className="button-primary"><Icon name="check" />旅行を作成する</button>
+                    <button type="submit" className="button-primary"><Icon name="check" />
+                        {props.mode === "create" 
+                            ? "旅行を作成する"
+                            : "変更を保存する"
+                        }
+                    </button>
                 </div>
             </div>
         </form>

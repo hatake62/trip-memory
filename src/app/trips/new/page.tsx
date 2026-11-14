@@ -13,7 +13,7 @@ export default function Page() {
         <p className="mb-3 text-xs font-semibold tracking-[0.2em] text-muted">A NEW JOURNEY</p>
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">新しい旅行</h1>
         <p className="mb-8 mt-4 text-sm leading-7 text-muted">次は、どこへ行きますか。<br />旅の名前と行き先から、予定をかたちにしましょう。</p>
-        <TripForm />
+        <TripForm mode="create"/>
       </div>
     </main>
   );
