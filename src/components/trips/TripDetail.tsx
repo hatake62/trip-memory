@@ -5,6 +5,7 @@ import type { Trip } from "@/lib/types";
 import { deleteSavedTrip, getTripById } from "@/lib/trip-storage";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ItineraryList } from "../itinerary/ItineraryList";
 
 export function TripDetail({ id }: { id: string }) {
     const [tripData, setTripData] = useState<Trip | undefined>();
@@ -76,6 +77,7 @@ export function TripDetail({ id }: { id: string }) {
                 <p>{tripData.destination}</p>
                 <p>{tripData.startDate} ~ {tripData.endDate}</p>
                 <p>{tripData.memo}</p>
+                <ItineraryList key={tripData.id} tripId={tripData.id} />
                 <Link href={`/trips/${id}/edit`}>
                     編集
                 </Link>
