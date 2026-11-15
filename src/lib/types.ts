@@ -54,6 +54,6 @@ export type CreateItineraryInput = Omit<ItineraryItem, "id">;
 export type UpdateItineraryInput = Omit<ItineraryItem, "id" | "tripId">;
 
 export type ItineraryFormProps = 
-    | {mode: "create"; trip: Trip}
+    | {mode: "create"; trip: Trip; initialDate?: string}
     | {mode: "edit"; trip: Trip; item: ItineraryItem};
 
