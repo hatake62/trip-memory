@@ -42,5 +42,8 @@ export function ItineraryCreate({id}: ItineraryCreateProps) {
         return <p>旅行が見つかりませんでした</p>;
     }
     
-    return <ItineraryForm  trip={trip}/>;
+    return <ItineraryForm  
+                trip={trip} 
+                mode="create"
+            />;
 }

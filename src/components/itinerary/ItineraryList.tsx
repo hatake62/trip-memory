@@ -45,9 +45,16 @@ export function ItineraryList({tripId}: ItineraryListProps) {
     return (
         <div>
             {schedules.map(schedule => (
-                <ItineraryItemCard item={schedule} key={schedule.id} />
-                ))
-            }
+                <ItineraryItemCard
+                    key={schedule.id}
+                    item={schedule}
+                    onDeleted={(deletedId) => {
+                        setSchedules(prev =>
+                            prev?.filter(item => item.id !== deletedId)
+                        );
+                    }}
+                />
+            ))}
         </div>
     )
 }

@@ -1,4 +1,4 @@
-import type { CreateItineraryInput, ItineraryItem } from "./types";
+import type { CreateItineraryInput, ItineraryItem, UpdateItineraryInput } from "./types";
 const STORAGE_KEY = "tabilog:itinerary:v1";
 
 function getAllItineraryItems(): ItineraryItem[] {
@@ -40,4 +40,47 @@ export function addItineraryItem(input: CreateItineraryInput): ItineraryItem {
     );
     return newItem;
 
+}
+
+export function updateItineraryItem(
+    id: string,
+    input: UpdateItineraryInput,
+) : ItineraryItem | undefined {
+    const allItems = getAllItineraryItems();
+
+    if(!allItems.some(item => item.id === id)){
+        return undefined;
+    }
+
+    const items = allItems.map(item => (
+        item.id === id 
+            ? { ...item, ...input}
+            : item 
+    ));
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+
+    return items.find(item => item.id === id);
+}
+
+export function deleteItineraryItem(
+    id: string
+): boolean {
+    const allItems = getAllItineraryItems();
+
+    if(!allItems.some(item => item.id === id)){
+        return false;
+    }
+
+    try {
+        const deletedItems = allItems.filter(item => (
+            item.id !== id
+        ));
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(deletedItems));
+        return true;
+    } catch (err) {
+        console.error(err);
+        throw new Error("保存に失敗しました。");
+    }
 }

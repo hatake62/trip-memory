@@ -1,24 +1,28 @@
 "use client";
 
-import { addItineraryItem } from "@/lib/itinerary-storage";
-import type { CreateItineraryInput, ItineraryCategory, Trip } from "@/lib/types";
+import { addItineraryItem, updateItineraryItem } from "@/lib/itinerary-storage";
+import type { CreateItineraryInput, ItineraryCategory, ItineraryFormProps, UpdateItineraryInput } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { FormEvent } from "react";
 
 
-type ItineraryFormProps = {
-    trip: Trip;
-};
-
-export function ItineraryForm({trip}: ItineraryFormProps) {
-    const [ formData, setFormData ] = useState<CreateItineraryInput>({
-        tripId: trip.id,
-        date: trip.startDate,
-        time: null,
-        title: "",
-        category: "other",
-        memo: ""
+export function ItineraryForm(prop: ItineraryFormProps) {
+    const [ formData, setFormData ] = useState<CreateItineraryInput>(
+        prop.mode === "create" ? {
+            tripId: prop.trip.id,
+            date: prop.trip.startDate,
+            time: null,
+            title: "",
+            category: "other",
+            memo: ""
+        }: {
+            tripId: prop.trip.id,
+            date: prop.item.date,
+            time: prop.item.time,
+            title: prop.item.title,
+            category: prop.item.category,
+            memo: prop.item.memo
     });
 
     const [ error, setError ] = useState("");
@@ -37,7 +41,7 @@ export function ItineraryForm({trip}: ItineraryFormProps) {
                 return;
             }
 
-            if(formData.date < trip.startDate || formData.date > trip.endDate){
+            if(formData.date < prop.trip.startDate || formData.date > prop.trip.endDate){
                 setError("日付は旅行日内で指定してください");
                 return;
             }
@@ -48,8 +52,25 @@ export function ItineraryForm({trip}: ItineraryFormProps) {
             };
 
             try {
-                addItineraryItem(validatedData);
-                router.push(`/trips/${trip.id}`);
+                if(prop.mode === "create") {
+                    addItineraryItem(validatedData);
+                    router.push(`/trips/${prop.trip.id}`);
+                } else {
+                    const updateInput: UpdateItineraryInput = {
+                        date: validatedData.date,
+                        time: validatedData.time,
+                        title: validatedData.title,
+                        category: validatedData.category,
+                        memo: validatedData.memo
+                    };
+
+                    const result = updateItineraryItem(prop.item.id, updateInput);
+                    if(!result) {
+                        setError("編集対象のスケジュールが見つかりません");
+                        return;
+                    }
+                    router.push(`/trips/${prop.trip.id}`);
+                }
             } catch(err) {
                 console.error(err);
                 setError("スケジュールの保存に失敗しました。もう一度お試しください");
@@ -67,8 +88,8 @@ export function ItineraryForm({trip}: ItineraryFormProps) {
                 <label htmlFor="date">日付</label>
                 <input 
                     id="date"
-                    min={trip.startDate}
-                    max={trip.endDate}
+                    min={prop.trip.startDate}
+                    max={prop.trip.endDate}
                     value={formData.date}
                     type="date" 
                     onChange={e => setFormData({...formData, date: e.target.value})}
@@ -99,7 +120,9 @@ export function ItineraryForm({trip}: ItineraryFormProps) {
                     onChange={e => setFormData({...formData, memo: e.target.value})}
                 />
                 <button type="submit">
-                    スケジュールを作成する
+                    {prop.mode === "create" 
+                        ? "スケジュールを作成する"
+                        : "変更を保存する"}
                 </button>
             </form>
             {error && (
