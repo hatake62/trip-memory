@@ -13,7 +13,6 @@ export function ItineraryList({tripId}: ItineraryListProps) {
     const [ schedules, setSchedules ] = useState<ItineraryItem[]>();
     const [ loadError, setLoadError ] = useState("");
 
-
     useEffect(() => {
         const timerId = setTimeout(() => {
             try {
@@ -42,9 +41,17 @@ export function ItineraryList({tripId}: ItineraryListProps) {
     }
 
 
+    const sortedSchedules = [...schedules].sort((a, b) => {
+        const compareDate = a.date.localeCompare(b.date);
+        if(compareDate === 0){
+           return  (a.time ?? "99:99").localeCompare(b.time ?? "99:99");
+        }
+        return compareDate;
+    });
+
     return (
         <div>
-            {schedules.map(schedule => (
+            {sortedSchedules.map(schedule => (
                 <ItineraryItemCard
                     key={schedule.id}
                     item={schedule}
