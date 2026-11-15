@@ -78,6 +78,9 @@ export function TripDetail({ id }: { id: string }) {
                 <p>{tripData.startDate} ~ {tripData.endDate}</p>
                 <p>{tripData.memo}</p>
                 <ItineraryList key={tripData.id} tripId={tripData.id} />
+                <Link href={`/trips/${tripData.id}/itinerary/new`}>
+                    予定を追加
+                </Link>
                 <Link href={`/trips/${id}/edit`}>
                     編集
                 </Link>
