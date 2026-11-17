@@ -6,6 +6,7 @@ import { deleteSavedTrip, getSavedTrips, getTripById } from "@/lib/trip-storage"
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ItineraryList } from "../itinerary/ItineraryList";
+import { PackingList } from "../packing/PackingList";
 
 export function TripDetail({ id }: { id: string }) {
     return <TripDetailContent key={id} id={id} />;
@@ -91,6 +92,7 @@ function TripDetailContent({ id }: { id: string }) {
                 endDate={tripData.endDate}
                 canEdit={canEdit}
             />
+            <PackingList tripId={tripData.id} />
             {canEdit && <div className="mt-6 flex flex-wrap gap-3">
                 <Link href={`/trips/${id}/edit`} className="button-secondary">
                     旅行を編集
