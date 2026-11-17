@@ -71,6 +71,9 @@ export function PackingList({tripId}: PackingProps) {
                     key={item.id} 
                     item={item}
                     onToggle={handleToggle}
+                    onDeleted={(deletedId) => {
+                        setItemData(prev => prev?.filter(item => item.id !== deletedId));
+                    }}
                 />
             ))}
         </div>
