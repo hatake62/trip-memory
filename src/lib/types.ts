@@ -66,3 +66,9 @@ export type PackingItem = {
 };
 
 export type CreatePackingInput = Omit<PackingItem, "id">;
+
+export type UpdatePackingInput = Pick<PackingItem, "name">;
+
+export type PackingFormProps = 
+    | {mode: "create"; trip: Trip}
+    | {mode: "edit"; trip: Trip; item: PackingItem};

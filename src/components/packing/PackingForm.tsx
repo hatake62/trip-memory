@@ -1,20 +1,25 @@
 'use client';
 
-import { addPackingItem } from "@/lib/packing-storage";
-import type { CreatePackingInput, Trip } from "@/lib/types";
+import { addPackingItem, updatePackingItem } from "@/lib/packing-storage";
+import type { CreatePackingInput, PackingFormProps, UpdatePackingInput } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
-type PackingFormProps = {
-  trip: Trip;
-};
 
-export function PackingForm({ trip }: PackingFormProps) {
-    const [ formData, setFormData ] = useState<CreatePackingInput>({
-        tripId: trip.id,
-        name: "",
-        isPacked: false
-    });
+export function PackingForm(prop: PackingFormProps) {
+    const [ formData, setFormData ] = useState<CreatePackingInput>(
+        prop.mode === "create" 
+            ? {
+                tripId: prop.trip.id,
+                name: "",
+                isPacked: false
+            }
+            : {
+                tripId: prop.trip.id,
+                name: prop.item.name,
+                isPacked: prop.item.isPacked
+            }
+        );
 
     const [ error, setError ] = useState("");
     const router = useRouter();
@@ -33,8 +38,20 @@ export function PackingForm({ trip }: PackingFormProps) {
         };
 
         try {
-            addPackingItem(validatedData);
-            router.push(`/trips/${trip.id}`);
+            if(prop.mode === "create"){
+                addPackingItem(validatedData);
+            } else {
+                const updateInput: UpdatePackingInput = {
+                    name: validatedData.name
+                }
+
+                const result = updatePackingItem(prop.item.id, updateInput);
+                if(!result) {
+                    setError("編集対象の持ち物が見つかりません ");
+                    return;
+                }
+            }
+            router.push(`/trips/${prop.trip.id}`);
         } catch(err) {
             console.error(err);
             setError("持ち物の保存に失敗しました");
@@ -51,7 +68,10 @@ export function PackingForm({ trip }: PackingFormProps) {
             />
             {error && <p role="alert">{error}</p>}
             <button type="submit">
-                追加
+                {prop.mode === "create" 
+                    ? "持ち物を追加"
+                    : "変更を保存"
+                }
             </button>
         </form>
 

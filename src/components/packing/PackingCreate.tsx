@@ -40,5 +40,5 @@ export function PackingCreate({id}: {id: string}) {
         return <p>旅行が見つかりませんでした</p>
     }
 
-    return <PackingForm trip={trip} />
+    return <PackingForm trip={trip} mode="create"/>
 }

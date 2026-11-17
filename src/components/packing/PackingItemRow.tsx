@@ -1,4 +1,5 @@
 import { PackingItem } from "@/lib/types"
+import Link from "next/link";
 
 type PackingItemRowProps = {
     item: PackingItem;
@@ -21,6 +22,9 @@ export function PackingItemRow(
                 {item.name}
             </label>
             <p>{message}</p>
+            <Link href={`/trips/${item.tripId}/packing/${item.id}/edit`}>
+                編集
+            </Link>
         </div>
     )
 }

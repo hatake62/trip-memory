@@ -1,4 +1,4 @@
-import type { CreatePackingInput, PackingItem } from "./types";
+import type { CreatePackingInput, PackingItem, UpdatePackingInput } from "./types";
 
 const STORAGE_KEY = "tabilog:packing:v1";
 
@@ -66,12 +66,57 @@ export function togglePackingItem(
         ));
 
         localStorage.setItem(STORAGE_KEY, JSON.stringify(toggledItem));
-        
+
         return toggledItem.find(item => item.id === id);
     } catch(err) {
         console.error(err);
         throw new Error("保存に失敗しました");
     }
-    
+}
 
+export function updatePackingItem(
+    id: string,
+    input: UpdatePackingInput
+): PackingItem | undefined {
+    const allItems = getAllPackingItems();
+
+    if(!allItems.some(item => item.id === id)){
+        return undefined;
+    }
+
+    try {
+        const updatedItem = allItems.map(item => (
+            item.id === id 
+                ? {...item, ...input}
+                : item
+        ));
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedItem));
+        return updatedItem.find(item => item.id === id);
+    } catch(err) {
+        console.error(err);
+        throw new Error("変更の保存に失敗しました ");
+    }
+}
+
+export function deletePackingItem(
+    id: string
+): boolean {
+    const allitems = getAllPackingItems();
+
+    if(!allitems.some(item => item.id === id)) {
+        return false
+    }
+
+    try {
+        const deletedItems = allitems.filter(item => 
+            item.id !== id
+        );
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(deletedItems));
+        return true;
+    } catch(err) {
+        console.error(err);
+        throw new Error("保存に失敗しました");
+    }
 }
