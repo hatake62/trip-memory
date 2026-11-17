@@ -87,7 +87,7 @@ export function updatePackingItem(
     try {
         const updatedItem = allItems.map(item => (
             item.id === id 
-                ? {...item, ...input}
+                ? {...item, name: input.name}
                 : item
         ));
 

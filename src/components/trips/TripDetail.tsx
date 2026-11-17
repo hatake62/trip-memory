@@ -92,12 +92,7 @@ function TripDetailContent({ id }: { id: string }) {
                 endDate={tripData.endDate}
                 canEdit={canEdit}
             />
-            <PackingList tripId={tripData.id} />
-            {canEdit && (
-                <Link href={`/trips/${tripData.id}/packing/new`}>
-                    持ち物を追加
-                </Link>
-            )}
+            <PackingList key={tripData.id} tripId={tripData.id} canEdit={canEdit} />
             {canEdit && <div className="mt-6 flex flex-wrap gap-3">
                 <Link href={`/trips/${id}/edit`} className="button-secondary">
                     旅行を編集
