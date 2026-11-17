@@ -1,7 +1,7 @@
 'use client';
 
-import { getPackingItems } from "@/lib/packing-storage";
-import { PackingItem } from "@/lib/types";
+import { getPackingItems, togglePackingItem } from "@/lib/packing-storage";
+import type { PackingItem } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { PackingItemRow } from "./PackingItemRow";
 
@@ -12,6 +12,8 @@ type PackingProps = {
 export function PackingList({tripId}: PackingProps) {
     const [ itemData, setItemData ] = useState<PackingItem[]>();
     const [ error, setError ] = useState("");
+    const [ updateError, setUpdateError ] = useState("");
+
 
     useEffect(() => {
         const timerId = setTimeout(() => {
@@ -27,6 +29,8 @@ export function PackingList({tripId}: PackingProps) {
         return () => window.clearTimeout(timerId);
     }, [tripId]);
 
+    
+
     if (error) {
         return <p role="alert">{error}</p>;
     }
@@ -38,10 +42,36 @@ export function PackingList({tripId}: PackingProps) {
     if(itemData.length === 0) {
         return <p>まだ持ち物が登録されていません</p>;
     }
+
+    function handleToggle(id: string) {
+        try {
+            const result = togglePackingItem(id);
+            if(result === undefined) {
+                setUpdateError("持ち物が見つかりません");
+                return;
+            }
+            setItemData(prev => 
+                prev?.map(item => 
+                    item.id === id ? result : item
+                )
+            );
+        } catch(err) {
+            console.error(err);
+            setUpdateError("持ち物の更新に失敗しました");
+        }
+    }
+
     return (
         <div>
-            {itemData?.map(item => (
-                <PackingItemRow key={item.id} item={item} />
+            {updateError && (
+                <p role="alert">{updateError}</p>
+            )}
+            {itemData.map(item => (
+                <PackingItemRow 
+                    key={item.id} 
+                    item={item}
+                    onToggle={handleToggle}
+                />
             ))}
         </div>
     )

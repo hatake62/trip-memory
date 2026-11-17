@@ -47,3 +47,31 @@ export function addPackingItem(
     localStorage.setItem(STORAGE_KEY, JSON.stringify([...nowData, newData]));
     return newData;
 }
+
+export function togglePackingItem(
+    id: string
+): PackingItem | undefined {
+    const data = getAllPackingItems();
+
+    if(!data.some(item => item.id === id)) {
+        return undefined;
+    }
+
+    try {
+        const toggledItem = data.map(item => (
+            item.id === id ? {
+                ...item,
+                isPacked: !item.isPacked
+            } : item
+        ));
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(toggledItem));
+        
+        return toggledItem.find(item => item.id === id);
+    } catch(err) {
+        console.error(err);
+        throw new Error("保存に失敗しました");
+    }
+    
+
+}
