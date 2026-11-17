@@ -57,3 +57,18 @@ export type ItineraryFormProps =
     | {mode: "create"; trip: Trip; initialDate?: string}
     | {mode: "edit"; trip: Trip; item: ItineraryItem};
 
+
+export type PackingItem = {
+    id: string;
+    tripId: string;
+    name: string;
+    isPacked: boolean;
+};
+
+export type CreatePackingInput = Omit<PackingItem, "id">;
+
+export type UpdatePackingInput = Pick<PackingItem, "name">;
+
+export type PackingFormProps = 
+    | {mode: "create"; trip: Trip}
+    | {mode: "edit"; trip: Trip; item: PackingItem};
